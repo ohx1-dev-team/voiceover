@@ -651,3 +651,9 @@ function leaveChannel() {
     // Return to join screen
     location.reload();
 }
+
+const themeToggle = document.getElementById("theme-toggle");
+
+themeToggle.addEventListener("click", () => {
+    document.body.classList.toggle("light-theme");
+});
