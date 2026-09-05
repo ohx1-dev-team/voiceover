@@ -1,6 +1,9 @@
+/* =========================================================
+   VOICEOVER — DARK / LIGHT THEME
+   ========================================================= */
 
 :root {
-    /* DARK BLUE — DEFAULT */
+    /* DARK MODE */
     --bg: #0f172a;
     --panel: #1e293b;
     --panel-2: #263449;
@@ -15,39 +18,37 @@
 
     --accent: #6366f1;
     --accent-hover: #818cf8;
-    --accent-dark: #4f46e5;
 
     --danger: #ef4444;
+
+    --shadow: rgba(0, 0, 0, 0.35);
 }
 
+body.light-theme {
+    /* LIGHT MODE */
+    --bg: #f1f5f9;
+    --panel: #ffffff;
+    --panel-2: #e2e8f0;
+    --border: #cbd5e1;
 
-/* =========================================================
-   DARK GRAY THEME
-   ========================================================= */
+    --input-bg: #f8fafc;
+    --input-border: #94a3b8;
 
-body.gray-theme {
-    --bg: #181818;
-    --panel: #242424;
-    --panel-2: #2e2e2e;
-    --border: #3d3d3d;
-
-    --input-bg: #191919;
-    --input-border: #454545;
-
-    --text: #ffffff;
-    --muted: #bdbdbd;
-    --placeholder: #888888;
+    --text: #0f172a;
+    --muted: #475569;
+    --placeholder: #64748b;
 
     --accent: #5865f2;
     --accent-hover: #4752c4;
-    --accent-dark: #3f4bb5;
 
-    --danger: #ff5c5c;
+    --danger: #dc2626;
+
+    --shadow: rgba(15, 23, 42, 0.15);
 }
 
 
 /* =========================================================
-   GLOBAL
+   RESET
    ========================================================= */
 
 * {
@@ -56,39 +57,64 @@ body.gray-theme {
 
 html,
 body {
-    width: 100%;
-    height: 100%;
     margin: 0;
     padding: 0;
+
+    width: 100%;
+    min-height: 100%;
+
+    font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
 }
 
+
+/* =========================================================
+   BODY
+   ========================================================= */
+
 body {
+    min-height: 100vh;
+
     background: var(--bg);
     color: var(--text);
 
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    font-size: 15px;
-    line-height: 1.5;
-
     transition:
-        background 0.2s ease,
+        background-color 0.2s ease,
         color 0.2s ease;
 }
 
-button,
+
+/* =========================================================
+   GENERAL TRANSITIONS
+   ========================================================= */
+
+.card,
+header,
+footer,
+main,
+.channel,
+.user,
 input,
 textarea,
-select {
-    font-family: inherit;
+select,
+button {
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
 }
 
-button {
-    cursor: pointer;
-}
+
+/* =========================================================
+   HIDDEN
+   ========================================================= */
 
 .hidden {
     display: none !important;
@@ -100,57 +126,64 @@ button {
    ========================================================= */
 
 #join-screen {
-    width: 100%;
-    height: 100vh;
+    min-height: 100vh;
 
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
 
-    padding: 20px;
-
-    background: var(--bg);
+    padding: 24px;
 }
 
 
 /* =========================================================
-   CARD
+   JOIN CARD
    ========================================================= */
 
 .card {
-    width: min(420px, 100%);
+    width: 100%;
+    max-width: 430px;
 
-    padding: 34px;
+    padding: 36px;
 
     background: var(--panel);
 
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 18px;
 
     box-shadow:
-        0 15px 40px rgba(0, 0, 0, 0.4);
+        0 20px 50px var(--shadow);
 
     text-align: center;
-
-    transition:
-        background 0.2s ease,
-        border-color 0.2s ease;
 }
+
+
+/* =========================================================
+   TITLE
+   ========================================================= */
 
 .card h1 {
     margin: 0 0 8px;
 
-    color: var(--text);
+    font-size: 36px;
+    font-weight: 800;
 
-    font-size: 31px;
+    letter-spacing: -1px;
+
+    color: var(--text);
 }
 
+
+/* =========================================================
+   SUBTITLE
+   ========================================================= */
+
 .subtitle {
-    margin: 0 0 24px;
+    margin: 0 0 28px;
 
     color: var(--muted);
 
-    font-size: 14px;
+    font-size: 15px;
 }
 
 
@@ -158,50 +191,33 @@ button {
    INPUTS
    ========================================================= */
 
-.card input,
-input,
-textarea,
-select {
+input {
+    width: 100%;
+
+    padding: 13px 15px;
+
+    margin-bottom: 12px;
+
     background: var(--input-bg);
     color: var(--text);
 
     border: 1px solid var(--input-border);
-    border-radius: 7px;
+    border-radius: 10px;
 
     outline: none;
-
-    transition:
-        border-color 0.15s ease,
-        box-shadow 0.15s ease,
-        background 0.2s ease;
-}
-
-.card input {
-    display: block;
-
-    width: 100%;
-    height: 46px;
-
-    margin: 10px 0;
-
-    padding: 0 13px;
 
     font-size: 15px;
 }
 
-input::placeholder,
-textarea::placeholder {
+input::placeholder {
     color: var(--placeholder);
-    opacity: 1;
 }
 
-input:focus,
-textarea:focus,
-select:focus {
+input:focus {
     border-color: var(--accent);
 
     box-shadow:
-        0 0 0 2px rgba(99, 102, 241, 0.2);
+        0 0 0 3px rgba(99, 102, 241, 0.18);
 }
 
 
@@ -210,33 +226,13 @@ select:focus {
    ========================================================= */
 
 button {
-    padding: 10px 16px;
-
-    background: var(--accent);
-    color: #ffffff;
-
     border: none;
-    border-radius: 7px;
 
-    font-size: 14px;
+    cursor: pointer;
+
+    font-family: inherit;
+    font-size: 15px;
     font-weight: 600;
-
-    transition:
-        background 0.15s ease,
-        transform 0.1s ease;
-}
-
-button:hover {
-    background: var(--accent-hover);
-}
-
-button:active {
-    transform: scale(0.98);
-}
-
-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
 }
 
 
@@ -246,27 +242,40 @@ button:disabled {
 
 #join-button {
     width: 100%;
-    height: 47px;
 
-    margin-top: 14px;
+    padding: 13px 16px;
 
-    font-size: 15px;
-    font-weight: 700;
+    margin-top: 4px;
+
+    background: var(--accent);
+    color: white;
+
+    border-radius: 10px;
+}
+
+#join-button:hover {
+    background: var(--accent-hover);
+
+    transform: translateY(-1px);
+}
+
+#join-button:active {
+    transform: translateY(0);
 }
 
 
 /* =========================================================
-   ERROR
+   ERROR MESSAGE
    ========================================================= */
 
 #error {
-    min-height: 18px;
+    min-height: 20px;
 
-    margin: 10px 0 0;
+    margin: 14px 0 0;
 
     color: var(--danger);
 
-    font-size: 13px;
+    font-size: 14px;
 }
 
 
@@ -275,15 +284,10 @@ button:disabled {
    ========================================================= */
 
 #voice-screen {
-    width: 100%;
-    height: 100vh;
+    min-height: 100vh;
 
     display: flex;
     flex-direction: column;
-
-    background: var(--bg);
-
-    transition: background 0.2s ease;
 }
 
 
@@ -292,25 +296,26 @@ button:disabled {
    ========================================================= */
 
 header {
-    min-height: 68px;
-
-    padding: 12px 20px;
-
     display: flex;
-    justify-content: space-between;
+
     align-items: center;
+    justify-content: space-between;
+
+    padding: 18px 24px;
 
     background: var(--panel);
 
     border-bottom: 1px solid var(--border);
 }
 
+
 header h2 {
-    margin: 0 0 3px;
+    margin: 0 0 4px;
+
+    font-size: 22px;
+    font-weight: 800;
 
     color: var(--text);
-
-    font-size: 20px;
 }
 
 header span {
@@ -325,18 +330,22 @@ header strong {
 
 
 /* =========================================================
-   LEAVE
+   LEAVE BUTTON
    ========================================================= */
 
 #leave-button {
-    background: #3a2025;
-    color: #fecaca;
+    padding: 9px 15px;
 
-    border: 1px solid #51282e;
+    background: transparent;
+    color: var(--danger);
+
+    border: 1px solid var(--danger);
+    border-radius: 9px;
 }
 
 #leave-button:hover {
-    background: #57262d;
+    background: var(--danger);
+    color: white;
 }
 
 
@@ -348,72 +357,100 @@ main {
     flex: 1;
 
     width: 100%;
-
-    padding: 24px;
-
-    overflow-y: auto;
-}
-
-.channel {
-    width: 100%;
-    max-width: 600px;
+    max-width: 1000px;
 
     margin: 0 auto;
-}
 
-.channel h3 {
-    margin: 0 0 10px;
-
-    color: var(--muted);
-
-    font-size: 12px;
-    font-weight: 700;
-
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
+    padding: 28px 24px;
 }
 
 
 /* =========================================================
-   USERS
+   CHANNEL PANEL
+   ========================================================= */
+
+.channel {
+    width: 100%;
+
+    padding: 22px;
+
+    background: var(--panel);
+
+    border: 1px solid var(--border);
+    border-radius: 16px;
+
+    box-shadow:
+        0 10px 30px var(--shadow);
+}
+
+
+.channel h3 {
+    margin: 0 0 18px;
+
+    font-size: 17px;
+
+    color: var(--text);
+}
+
+
+/* =========================================================
+   USER LIST
    ========================================================= */
 
 #user-list {
     display: flex;
     flex-direction: column;
 
-    gap: 3px;
+    gap: 8px;
 }
 
+
+/* =========================================================
+   USER
+   ========================================================= */
+
 .user {
-    min-height: 48px;
-
-    padding: 10px 13px;
-
     display: flex;
+
     align-items: center;
+
+    gap: 11px;
+
+    padding: 12px 14px;
+
+    background: var(--panel-2);
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
 
     color: var(--text);
 
-    border-radius: 8px;
+    font-size: 15px;
 }
 
 .user:hover {
-    background: var(--panel-2);
+    border-color: var(--accent);
+
+    transform: translateX(2px);
 }
 
+
+/* =========================================================
+   USER STATUS DOT
+   ========================================================= */
+
 .status {
-    width: 10px;
-    height: 10px;
+    width: 9px;
+    height: 9px;
 
-    margin-right: 12px;
-
-    border-radius: 50%;
+    flex-shrink: 0;
 
     background: #22c55e;
 
+    border-radius: 50%;
+
     box-shadow:
-        0 0 7px rgba(34, 197, 94, 0.4);
+        0 0 8px rgba(34, 197, 94, 0.5);
 }
 
 
@@ -422,68 +459,48 @@ main {
    ========================================================= */
 
 footer {
-    min-height: 70px;
-
-    padding: 12px 20px;
-
     display: flex;
+
     justify-content: center;
-    align-items: center;
 
     gap: 10px;
+
+    padding: 18px 24px;
 
     background: var(--panel);
 
     border-top: 1px solid var(--border);
 }
 
-footer button {
-    min-width: 115px;
-
-    background: var(--panel-2);
-
-    color: var(--text);
-
-    border: 1px solid var(--border);
-}
-
-footer button:hover {
-    background: var(--accent);
-    border-color: var(--accent);
-}
-
 
 /* =========================================================
-   THEME SWITCHER
+   VOICE CONTROL BUTTONS
    ========================================================= */
 
-#theme-button {
-    position: fixed;
+#mute-button,
+#deafen-button {
+    min-width: 120px;
 
-    top: 15px;
-    right: 15px;
+    padding: 11px 16px;
 
-    z-index: 1000;
-
-    padding: 8px 12px;
-
-    background: var(--panel);
-
+    background: var(--panel-2);
     color: var(--text);
 
     border: 1px solid var(--border);
-    border-radius: 7px;
-
-    font-size: 13px;
+    border-radius: 10px;
 }
 
-#theme-button:hover {
-    background: var(--panel-2);
+#mute-button:hover,
+#deafen-button:hover {
+    border-color: var(--accent);
+
+    background: var(--accent);
+    color: white;
 }
 
 
 /* =========================================================
-   AUDIO
+   AUDIO CONTAINER
    ========================================================= */
 
 #audio-container {
@@ -492,26 +509,98 @@ footer button:hover {
 
 
 /* =========================================================
-   SCROLLBAR
+   THEME TOGGLE
    ========================================================= */
 
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+.theme-toggle {
+    position: fixed;
+
+    top: 15px;
+    right: 15px;
+
+    z-index: 9999;
+
+    width: 58px !important;
+    height: 30px !important;
+
+    min-width: 0 !important;
+
+    padding: 0 !important;
+    margin: 0 !important;
+
+    background: #334155 !important;
+
+    border: 1px solid #475569 !important;
+    border-radius: 999px !important;
+
+    cursor: pointer;
+
+    box-shadow: none !important;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease;
 }
 
-::-webkit-scrollbar-track {
-    background: var(--bg);
+
+/* Toggle circle */
+
+.theme-toggle::after {
+    content: "";
+
+    position: absolute;
+
+    top: 3px;
+    left: 3px;
+
+    width: 22px;
+    height: 22px;
+
+    background: #ffffff;
+
+    border-radius: 50%;
+
+    transition:
+        transform 0.2s ease;
 }
 
-::-webkit-scrollbar-thumb {
-    background: var(--border);
 
-    border-radius: 10px;
+/* Moon */
+
+.theme-toggle::before {
+    content: "🌙";
+
+    position: absolute;
+
+    left: 7px;
+    top: 4px;
+
+    font-size: 14px;
+
+    line-height: 20px;
+
+    z-index: 2;
+
+    pointer-events: none;
 }
 
-::-webkit-scrollbar-thumb:hover {
-    background: #64748b;
+
+/* Light mode toggle */
+
+body.light-theme .theme-toggle {
+    background: #6366f1 !important;
+
+    border-color: #6366f1 !important;
+}
+
+body.light-theme .theme-toggle::after {
+    transform: translateX(28px);
+}
+
+body.light-theme .theme-toggle::before {
+    content: "☀️";
+
+    left: 35px;
 }
 
 
@@ -522,33 +611,49 @@ footer button:hover {
 @media (max-width: 600px) {
 
     .card {
-        padding: 27px 20px;
+        padding: 28px 22px;
     }
 
     .card h1 {
-        font-size: 28px;
+        font-size: 30px;
     }
 
     header {
-        padding: 12px 15px;
+        padding: 16px;
     }
 
     main {
-        padding: 15px;
+        padding: 18px 14px;
     }
 
     footer {
-        padding: 10px;
+        padding: 14px;
+
+        flex-direction: column;
     }
 
-    footer button {
-        flex: 1;
-        min-width: 0;
+    #mute-button,
+    #deafen-button {
+        width: 100%;
     }
 
-    #theme-button {
+    .theme-toggle {
         top: 10px;
         right: 10px;
     }
 }
 
+
+/* =========================================================
+   REDUCE MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        transition: none !important;
+        animation: none !important;
+    }
+}
