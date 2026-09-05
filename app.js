@@ -10,6 +10,7 @@ let deafened = false;
 
 const peers = new Map();
 const pendingCandidates = new Map();
+const reconnectingPeers = new Set();
 
 
 // =========================================================
@@ -65,24 +66,29 @@ const savedTheme =
 
 if (savedTheme === "light") {
     document.body.classList.add("light-theme");
-    themeToggle.checked = true;
+
+    if (themeToggle) {
+        themeToggle.checked = true;
+    }
 }
 
-themeToggle.addEventListener("change", () => {
+if (themeToggle) {
+    themeToggle.addEventListener("change", () => {
 
-    const isLight =
-        themeToggle.checked;
+        const isLight =
+            themeToggle.checked;
 
-    document.body.classList.toggle(
-        "light-theme",
-        isLight
-    );
+        document.body.classList.toggle(
+            "light-theme",
+            isLight
+        );
 
-    localStorage.setItem(
-        "voiceover-theme",
-        isLight ? "light" : "dark"
-    );
-});
+        localStorage.setItem(
+            "voiceover-theme",
+            isLight ? "light" : "dark"
+        );
+    });
+}
 
 
 // =========================================================
@@ -302,6 +308,7 @@ socket.on(
 
 
         pendingCandidates.delete(id);
+        reconnectingPeers.delete(id);
     }
 );
 
@@ -472,6 +479,9 @@ function createPeer(userId) {
                 audio.playsInline =
                     true;
 
+                audio.controls =
+                    false;
+
 
                 audioContainer.appendChild(
                     audio
@@ -520,11 +530,20 @@ function createPeer(userId) {
                     error
                 );
             }
+
+
+            event.track.onended = () => {
+
+                console.warn(
+                    "Remote audio track ended:",
+                    userId
+                );
+            };
         };
 
 
     // -----------------------------------------------------
-    // ICE
+    // ICE CANDIDATES
     // -----------------------------------------------------
 
     peer.onicecandidate =
@@ -553,7 +572,7 @@ function createPeer(userId) {
     // -----------------------------------------------------
 
     peer.onconnectionstatechange =
-        () => {
+        async () => {
 
             console.log(
                 `Connection ${userId}:`,
@@ -570,6 +589,26 @@ function createPeer(userId) {
                     "Voice connection established:",
                     userId
                 );
+
+                reconnectingPeers.delete(
+                    userId
+                );
+            }
+
+
+            if (
+                peer.connectionState ===
+                "disconnected"
+            ) {
+
+                console.warn(
+                    "WebRTC connection temporarily disconnected:",
+                    userId
+                );
+
+                schedulePeerRecovery(
+                    userId
+                );
             }
 
 
@@ -582,6 +621,26 @@ function createPeer(userId) {
                     "WebRTC connection failed:",
                     userId
                 );
+
+                await recoverPeer(
+                    userId
+                );
+            }
+
+
+            if (
+                peer.connectionState ===
+                "closed"
+            ) {
+
+                console.warn(
+                    "WebRTC connection closed:",
+                    userId
+                );
+
+                reconnectingPeers.delete(
+                    userId
+                );
             }
         };
 
@@ -591,11 +650,89 @@ function createPeer(userId) {
     // -----------------------------------------------------
 
     peer.oniceconnectionstatechange =
-        () => {
+        async () => {
 
             console.log(
                 `ICE ${userId}:`,
                 peer.iceConnectionState
+            );
+
+
+            if (
+                peer.iceConnectionState ===
+                "connected" ||
+                peer.iceConnectionState ===
+                "completed"
+            ) {
+
+                console.log(
+                    "ICE connection established:",
+                    userId
+                );
+
+                reconnectingPeers.delete(
+                    userId
+                );
+            }
+
+
+            if (
+                peer.iceConnectionState ===
+                "disconnected"
+            ) {
+
+                console.warn(
+                    "ICE temporarily disconnected:",
+                    userId
+                );
+
+                schedulePeerRecovery(
+                    userId
+                );
+            }
+
+
+            if (
+                peer.iceConnectionState ===
+                "failed"
+            ) {
+
+                console.warn(
+                    "ICE failed:",
+                    userId
+                );
+
+                await recoverPeer(
+                    userId
+                );
+            }
+        };
+
+
+    // -----------------------------------------------------
+    // ICE GATHERING DEBUG
+    // -----------------------------------------------------
+
+    peer.onicegatheringstatechange =
+        () => {
+
+            console.log(
+                `ICE gathering ${userId}:`,
+                peer.iceGatheringState
+            );
+        };
+
+
+    // -----------------------------------------------------
+    // SIGNALING DEBUG
+    // -----------------------------------------------------
+
+    peer.onsignalingstatechange =
+        () => {
+
+            console.log(
+                `Signaling ${userId}:`,
+                peer.signalingState
             );
         };
 
@@ -614,6 +751,12 @@ async function createOffer(userId) {
 
         const peer =
             createPeer(userId);
+
+
+        console.log(
+            "Creating offer for:",
+            userId
+        );
 
 
         const offer =
@@ -899,6 +1042,257 @@ async function addPendingCandidates(
 
 
 // =========================================================
+// PEER RECOVERY
+// =========================================================
+
+function schedulePeerRecovery(userId) {
+
+    if (
+        reconnectingPeers.has(userId)
+    ) {
+        return;
+    }
+
+
+    reconnectingPeers.add(
+        userId
+    );
+
+
+    console.log(
+        "Scheduling WebRTC recovery:",
+        userId
+    );
+
+
+    setTimeout(
+        async () => {
+
+            const peer =
+                peers.get(userId);
+
+
+            if (!peer) {
+
+                reconnectingPeers.delete(
+                    userId
+                );
+
+                return;
+            }
+
+
+            if (
+                peer.connectionState ===
+                "connected"
+            ) {
+
+                reconnectingPeers.delete(
+                    userId
+                );
+
+                return;
+            }
+
+
+            await recoverPeer(
+                userId
+            );
+
+        },
+        1500
+    );
+}
+
+
+// =========================================================
+// RECOVER PEER
+// =========================================================
+
+async function recoverPeer(userId) {
+
+    if (
+        !localStream
+    ) {
+        return;
+    }
+
+
+    if (
+        reconnectingPeers.has(userId) &&
+        peers.get(userId)?.connectionState ===
+            "failed"
+    ) {
+
+        // Continue with recovery.
+    }
+
+
+    reconnectingPeers.add(
+        userId
+    );
+
+
+    const oldPeer =
+        peers.get(userId);
+
+
+    if (!oldPeer) {
+
+        reconnectingPeers.delete(
+            userId
+        );
+
+        return;
+    }
+
+
+    console.log(
+        "Attempting WebRTC recovery:",
+        userId
+    );
+
+
+    // -----------------------------------------------------
+    // TRY ICE RESTART FIRST
+    // -----------------------------------------------------
+
+    try {
+
+        if (
+            oldPeer.signalingState ===
+            "stable" &&
+            oldPeer.connectionState !==
+            "closed"
+        ) {
+
+            console.log(
+                "Attempting ICE restart:",
+                userId
+            );
+
+
+            const offer =
+                await oldPeer.createOffer({
+                    iceRestart: true
+                });
+
+
+            await oldPeer.setLocalDescription(
+                offer
+            );
+
+
+            socket.emit(
+                "offer",
+                {
+                    target: userId,
+                    offer:
+                        oldPeer.localDescription
+                }
+            );
+
+
+            setTimeout(
+                () => {
+
+                    const currentPeer =
+                        peers.get(userId);
+
+
+                    if (
+                        currentPeer &&
+                        (
+                            currentPeer.connectionState ===
+                                "connected" ||
+                            currentPeer.iceConnectionState ===
+                                "connected" ||
+                            currentPeer.iceConnectionState ===
+                                "completed"
+                        )
+                    ) {
+
+                        reconnectingPeers.delete(
+                            userId
+                        );
+
+                    }
+
+                },
+                5000
+            );
+
+
+            return;
+        }
+
+    } catch (error) {
+
+        console.warn(
+            "ICE restart failed:",
+            error
+        );
+    }
+
+
+    // -----------------------------------------------------
+    // FULL PEER REBUILD
+    // -----------------------------------------------------
+
+    console.log(
+        "Rebuilding peer connection:",
+        userId
+    );
+
+
+    try {
+        oldPeer.close();
+    } catch (error) {
+        console.warn(
+            "Error closing old peer:",
+            error
+        );
+    }
+
+
+    peers.delete(
+        userId
+    );
+
+
+    const audio =
+        document.getElementById(
+            `audio-${userId}`
+        );
+
+
+    if (audio) {
+        audio.remove();
+    }
+
+
+    reconnectingPeers.delete(
+        userId
+    );
+
+
+    try {
+
+        await createOffer(
+            userId
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Peer rebuild failed:",
+            error
+        );
+    }
+}
+
+
+// =========================================================
 // MUTE
 // =========================================================
 
@@ -999,13 +1393,22 @@ function leaveChannel() {
         of peers.values()
     ) {
 
-        peer.close();
+        try {
+            peer.close();
+        } catch (error) {
+            console.warn(
+                "Error closing peer:",
+                error
+            );
+        }
     }
 
 
     peers.clear();
 
     pendingCandidates.clear();
+
+    reconnectingPeers.clear();
 
 
     audioContainer.innerHTML =
@@ -1044,6 +1447,22 @@ socket.on(
 
         console.log(
             "Socket disconnected"
+        );
+    }
+);
+
+
+// =========================================================
+// SOCKET RECONNECT
+// =========================================================
+
+socket.on(
+    "connect_error",
+    (error) => {
+
+        console.error(
+            "Socket connection error:",
+            error
         );
     }
 );
