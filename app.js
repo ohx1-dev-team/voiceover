@@ -1,3 +1,4 @@
+```js
 const socket = io();
 
 let username = "";
@@ -9,6 +10,7 @@ let muted = false;
 let deafened = false;
 
 const peers = new Map();
+const pendingCandidates = new Map();
 
 const joinScreen = document.getElementById("join-screen");
 const voiceScreen = document.getElementById("voice-screen");
@@ -29,14 +31,13 @@ const errorText = document.getElementById("error");
 const audioContainer = document.getElementById("audio-container");
 
 
-/* -----------------------------
-   JOIN
------------------------------ */
+/* ========================================
+   JOIN CHANNEL
+======================================== */
 
 joinButton.addEventListener("click", joinChannel);
 
 async function joinChannel() {
-
     username = usernameInput.value.trim();
     channelId = channelInput.value.trim();
 
@@ -53,18 +54,19 @@ async function joinChannel() {
     errorText.textContent = "";
 
     try {
-
         localStream = await navigator.mediaDevices.getUserMedia({
-            audio: true,
+            audio: {
+                echoCancellation: true,
+                noiseSuppression: true,
+                autoGainControl: true
+            },
             video: false
         });
-
     } catch (error) {
-
-        console.error(error);
+        console.error("Microphone error:", error);
 
         errorText.textContent =
-            "Microphone permission is required.";
+            "Could not access your microphone.";
 
         return;
     }
@@ -83,14 +85,14 @@ async function joinChannel() {
 }
 
 
-/* -----------------------------
-   CHANNEL USERS
------------------------------ */
+/* ========================================
+   CHANNEL MEMBERS
+======================================== */
 
 socket.on("channel-users", async (users) => {
+    console.log("Existing users:", users);
 
     for (const user of users) {
-
         addUser(user.id, user.username);
 
         await createOffer(user.id);
@@ -99,12 +101,14 @@ socket.on("channel-users", async (users) => {
 
 
 socket.on("user-joined", ({ id, username }) => {
+    console.log("User joined:", username, id);
 
     addUser(id, username);
 });
 
 
 socket.on("user-left", ({ id }) => {
+    console.log("User left:", id);
 
     removeUser(id);
 
@@ -114,15 +118,22 @@ socket.on("user-left", ({ id }) => {
         peer.close();
         peers.delete(id);
     }
+
+    const audio = document.getElementById(`audio-${id}`);
+
+    if (audio) {
+        audio.remove();
+    }
+
+    pendingCandidates.delete(id);
 });
 
 
-/* -----------------------------
+/* ========================================
    USER LIST
------------------------------ */
+======================================== */
 
 function addUser(id, name) {
-
     if (document.getElementById(`user-${id}`)) {
         return;
     }
@@ -142,7 +153,6 @@ function addUser(id, name) {
 
 
 function removeUser(id) {
-
     const element = document.getElementById(`user-${id}`);
 
     if (element) {
@@ -152,24 +162,22 @@ function removeUser(id) {
 
 
 function escapeHtml(text) {
-
     const div = document.createElement("div");
-
     div.textContent = text;
-
     return div.innerHTML;
 }
 
 
-/* -----------------------------
-   WEBRTC
------------------------------ */
+/* ========================================
+   CREATE PEER CONNECTION
+======================================== */
 
 function createPeer(userId) {
-
     if (peers.has(userId)) {
         return peers.get(userId);
     }
+
+    console.log("Creating peer connection:", userId);
 
     const peer = new RTCPeerConnection({
         iceServers: [
@@ -181,39 +189,65 @@ function createPeer(userId) {
 
     peers.set(userId, peer);
 
-
-    // Send our microphone to them.
-    for (const track of localStream.getTracks()) {
-        peer.addTrack(track, localStream);
+    /*
+     * Send microphone audio.
+     */
+    if (localStream) {
+        for (const track of localStream.getTracks()) {
+            peer.addTrack(track, localStream);
+        }
     }
 
 
-    // Receive their microphone.
-    peer.ontrack = (event) => {
+    /*
+     * Receive remote audio.
+     */
+    peer.ontrack = async (event) => {
+        console.log("REMOTE AUDIO RECEIVED FROM:", userId);
 
         let audio = document.getElementById(`audio-${userId}`);
 
         if (!audio) {
-
             audio = document.createElement("audio");
 
             audio.id = `audio-${userId}`;
             audio.autoplay = true;
-            audio.controls = false;
+            audio.playsInline = true;
 
             audioContainer.appendChild(audio);
         }
 
         audio.srcObject = event.streams[0];
-
         audio.muted = deafened;
+
+        /*
+         * Explicitly attempt playback.
+         */
+        try {
+            await audio.play();
+
+            console.log(
+                "Remote audio playing:",
+                userId
+            );
+        } catch (error) {
+            console.warn(
+                "Autoplay was blocked:",
+                error
+            );
+        }
     };
 
 
-    // ICE candidates.
+    /*
+     * ICE candidates.
+     */
     peer.onicecandidate = (event) => {
+        if (!event.candidate) {
+            return;
+        }
 
-        if (!event.candidate) return;
+        console.log("Sending ICE candidate to:", userId);
 
         socket.emit("ice-candidate", {
             target: userId,
@@ -222,101 +256,243 @@ function createPeer(userId) {
     };
 
 
+    /*
+     * Connection state debugging.
+     */
+    peer.onconnectionstatechange = () => {
+        console.log(
+            `Connection ${userId}:`,
+            peer.connectionState
+        );
+
+        if (
+            peer.connectionState === "failed" ||
+            peer.connectionState === "disconnected"
+        ) {
+            console.warn(
+                "WebRTC connection problem:",
+                userId
+            );
+        }
+    };
+
+
+    peer.oniceconnectionstatechange = () => {
+        console.log(
+            `ICE ${userId}:`,
+            peer.iceConnectionState
+        );
+    };
+
+
     return peer;
 }
 
 
-/* -----------------------------
-   OFFER
------------------------------ */
+/* ========================================
+   CREATE OFFER
+======================================== */
 
 async function createOffer(userId) {
+    try {
+        const peer = createPeer(userId);
 
-    const peer = createPeer(userId);
+        const offer = await peer.createOffer();
 
-    const offer = await peer.createOffer();
+        await peer.setLocalDescription(offer);
 
-    await peer.setLocalDescription(offer);
+        console.log("Sending offer to:", userId);
 
-    socket.emit("offer", {
-        target: userId,
-        offer
-    });
+        socket.emit("offer", {
+            target: userId,
+            offer: peer.localDescription
+        });
+
+    } catch (error) {
+        console.error(
+            "Offer creation failed:",
+            error
+        );
+    }
 }
 
 
-/* -----------------------------
+/* ========================================
    RECEIVE OFFER
------------------------------ */
+======================================== */
 
 socket.on("offer", async ({ sender, offer }) => {
-
-    const peer = createPeer(sender);
-
-    await peer.setRemoteDescription(
-        new RTCSessionDescription(offer)
-    );
-
-    const answer = await peer.createAnswer();
-
-    await peer.setLocalDescription(answer);
-
-    socket.emit("answer", {
-        target: sender,
-        answer
-    });
-});
-
-
-/* -----------------------------
-   RECEIVE ANSWER
------------------------------ */
-
-socket.on("answer", async ({ sender, answer }) => {
-
-    const peer = peers.get(sender);
-
-    if (!peer) return;
-
-    await peer.setRemoteDescription(
-        new RTCSessionDescription(answer)
-    );
-});
-
-
-/* -----------------------------
-   ICE
------------------------------ */
-
-socket.on("ice-candidate", async ({ sender, candidate }) => {
-
-    const peer = peers.get(sender);
-
-    if (!peer) return;
-
     try {
+        console.log("Received offer from:", sender);
 
-        await peer.addIceCandidate(
-            new RTCIceCandidate(candidate)
+        const peer = createPeer(sender);
+
+        await peer.setRemoteDescription(
+            new RTCSessionDescription(offer)
         );
 
-    } catch (error) {
+        /*
+         * ICE candidates that arrived early
+         * can now be added.
+         */
+        await addPendingCandidates(sender);
 
+        const answer = await peer.createAnswer();
+
+        await peer.setLocalDescription(answer);
+
+        console.log("Sending answer to:", sender);
+
+        socket.emit("answer", {
+            target: sender,
+            answer: peer.localDescription
+        });
+
+    } catch (error) {
         console.error(
-            "Failed to add ICE candidate:",
+            "Offer handling failed:",
             error
         );
     }
 });
 
 
-/* -----------------------------
+/* ========================================
+   RECEIVE ANSWER
+======================================== */
+
+socket.on("answer", async ({ sender, answer }) => {
+    try {
+        console.log("Received answer from:", sender);
+
+        const peer = peers.get(sender);
+
+        if (!peer) {
+            console.warn(
+                "No peer for answer:",
+                sender
+            );
+
+            return;
+        }
+
+        await peer.setRemoteDescription(
+            new RTCSessionDescription(answer)
+        );
+
+        await addPendingCandidates(sender);
+
+    } catch (error) {
+        console.error(
+            "Answer handling failed:",
+            error
+        );
+    }
+});
+
+
+/* ========================================
+   RECEIVE ICE CANDIDATE
+======================================== */
+
+socket.on(
+    "ice-candidate",
+    async ({ sender, candidate }) => {
+
+        try {
+            console.log(
+                "Received ICE candidate from:",
+                sender
+            );
+
+            const peer = peers.get(sender);
+
+            /*
+             * If the peer doesn't exist yet,
+             * save the candidate.
+             */
+            if (!peer) {
+                queueCandidate(sender, candidate);
+                return;
+            }
+
+            /*
+             * If remote description isn't ready,
+             * save it for later.
+             */
+            if (!peer.remoteDescription) {
+                queueCandidate(sender, candidate);
+                return;
+            }
+
+            await peer.addIceCandidate(
+                new RTCIceCandidate(candidate)
+            );
+
+        } catch (error) {
+            console.error(
+                "ICE candidate error:",
+                error
+            );
+        }
+    }
+);
+
+
+/* ========================================
+   ICE CANDIDATE QUEUE
+======================================== */
+
+function queueCandidate(userId, candidate) {
+    if (!pendingCandidates.has(userId)) {
+        pendingCandidates.set(userId, []);
+    }
+
+    pendingCandidates
+        .get(userId)
+        .push(candidate);
+}
+
+
+async function addPendingCandidates(userId) {
+    const peer = peers.get(userId);
+
+    if (!peer) {
+        return;
+    }
+
+    const candidates =
+        pendingCandidates.get(userId);
+
+    if (!candidates) {
+        return;
+    }
+
+    for (const candidate of candidates) {
+        try {
+            await peer.addIceCandidate(
+                new RTCIceCandidate(candidate)
+            );
+        } catch (error) {
+            console.error(
+                "Queued ICE candidate failed:",
+                error
+            );
+        }
+    }
+
+    pendingCandidates.delete(userId);
+}
+
+
+/* ========================================
    MUTE
------------------------------ */
+======================================== */
 
 muteButton.addEventListener("click", () => {
-
-    if (!localStream) return;
+    if (!localStream) {
+        return;
+    }
 
     muted = !muted;
 
@@ -325,16 +501,17 @@ muteButton.addEventListener("click", () => {
     }
 
     muteButton.textContent =
-        muted ? "🔇 Unmute" : "🎙️ Mute";
+        muted
+            ? "🔇 Unmute"
+            : "🎙️ Mute";
 });
 
 
-/* -----------------------------
+/* ========================================
    DEAFEN
------------------------------ */
+======================================== */
 
 deafenButton.addEventListener("click", () => {
-
     deafened = !deafened;
 
     const audios =
@@ -345,20 +522,20 @@ deafenButton.addEventListener("click", () => {
     });
 
     deafenButton.textContent =
-        deafened ? "🔇 Undeafen" : "🔊 Deafen";
+        deafened
+            ? "🔇 Undeafen"
+            : "🔊 Deafen";
 });
 
 
-/* -----------------------------
+/* ========================================
    LEAVE
------------------------------ */
+======================================== */
 
 leaveButton.addEventListener("click", leaveChannel);
 
 function leaveChannel() {
-
     if (localStream) {
-
         for (const track of localStream.getTracks()) {
             track.stop();
         }
@@ -371,6 +548,7 @@ function leaveChannel() {
     }
 
     peers.clear();
+    pendingCandidates.clear();
 
     audioContainer.innerHTML = "";
     userList.innerHTML = "";
@@ -379,3 +557,4 @@ function leaveChannel() {
 
     location.reload();
 }
+```
