@@ -1,20 +1,48 @@
 
 :root {
-    --bg-color: #0f172a;
-    --panel-color: #1e293b;
-    --panel-hover: #263449;
+    /* DARK BLUE — DEFAULT */
+    --bg: #0f172a;
+    --panel: #1e293b;
+    --panel-2: #263449;
+    --border: #334155;
 
-    --accent-color: #6366f1;
-    --accent-hover: #818cf8;
-
-    --text-color: #f8fafc;
-    --muted-text: #cbd5e1;
-
-    --input-bg: #0f172a;
+    --input-bg: #172033;
     --input-border: #475569;
 
-    --border-color: #334155;
-    --danger-color: #f87171;
+    --text: #f8fafc;
+    --muted: #cbd5e1;
+    --placeholder: #94a3b8;
+
+    --accent: #6366f1;
+    --accent-hover: #818cf8;
+    --accent-dark: #4f46e5;
+
+    --danger: #ef4444;
+}
+
+
+/* =========================================================
+   DARK GRAY THEME
+   ========================================================= */
+
+body.gray-theme {
+    --bg: #181818;
+    --panel: #242424;
+    --panel-2: #2e2e2e;
+    --border: #3d3d3d;
+
+    --input-bg: #191919;
+    --input-border: #454545;
+
+    --text: #ffffff;
+    --muted: #bdbdbd;
+    --placeholder: #888888;
+
+    --accent: #5865f2;
+    --accent-hover: #4752c4;
+    --accent-dark: #3f4bb5;
+
+    --danger: #ff5c5c;
 }
 
 
@@ -28,35 +56,38 @@
 
 html,
 body {
-    margin: 0;
-    padding: 0;
-
     width: 100%;
     height: 100%;
+    margin: 0;
+    padding: 0;
+}
 
-    font-family: Arial, Helvetica, sans-serif;
+body {
+    background: var(--bg);
+    color: var(--text);
 
-    background: var(--bg-color);
-    color: var(--text-color);
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 15px;
+    line-height: 1.5;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
 }
 
 button,
-input {
+input,
+textarea,
+select {
     font-family: inherit;
 }
 
 button {
-    border: none;
     cursor: pointer;
-
-    transition:
-        background-color 0.15s ease,
-        transform 0.1s ease,
-        opacity 0.15s ease;
-}
-
-button:active {
-    transform: scale(0.98);
 }
 
 .hidden {
@@ -78,50 +109,48 @@ button:active {
 
     padding: 20px;
 
-    background:
-        radial-gradient(
-            circle at top,
-            #263449 0%,
-            #0f172a 60%
-        );
+    background: var(--bg);
 }
 
 
 /* =========================================================
-   JOIN CARD
+   CARD
    ========================================================= */
 
 .card {
     width: min(420px, 100%);
 
-    padding: 36px;
+    padding: 34px;
 
-    background: var(--panel-color);
+    background: var(--panel);
 
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
 
     box-shadow:
-        0 20px 50px rgba(0, 0, 0, 0.45);
+        0 15px 40px rgba(0, 0, 0, 0.4);
 
     text-align: center;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
 }
 
 .card h1 {
-    margin: 0;
+    margin: 0 0 8px;
 
-    color: #ffffff;
+    color: var(--text);
 
-    font-size: 32px;
-    font-weight: 700;
+    font-size: 31px;
 }
 
 .subtitle {
-    margin: 8px 0 28px;
+    margin: 0 0 24px;
 
-    color: var(--muted-text);
+    color: var(--muted);
 
-    font-size: 15px;
+    font-size: 14px;
 }
 
 
@@ -129,49 +158,85 @@ button:active {
    INPUTS
    ========================================================= */
 
+.card input,
+input,
+textarea,
+select {
+    background: var(--input-bg);
+    color: var(--text);
+
+    border: 1px solid var(--input-border);
+    border-radius: 7px;
+
+    outline: none;
+
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        background 0.2s ease;
+}
+
 .card input {
     display: block;
 
     width: 100%;
-    height: 48px;
+    height: 46px;
 
     margin: 10px 0;
 
-    padding: 0 15px;
-
-    background: var(--input-bg);
-
-    color: #ffffff;
-
-    border: 1px solid var(--input-border);
-    border-radius: 8px;
-
-    outline: none;
+    padding: 0 13px;
 
     font-size: 15px;
-    font-weight: 500;
-
-    transition:
-        border-color 0.15s ease,
-        box-shadow 0.15s ease;
 }
 
-
-/* Placeholder text */
-
-.card input::placeholder {
-    color: #94a3b8;
+input::placeholder,
+textarea::placeholder {
+    color: var(--placeholder);
     opacity: 1;
 }
 
-
-/* When typing */
-
-.card input:focus {
-    border-color: var(--accent-color);
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--accent);
 
     box-shadow:
-        0 0 0 2px rgba(99, 102, 241, 0.25);
+        0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+button {
+    padding: 10px 16px;
+
+    background: var(--accent);
+    color: #ffffff;
+
+    border: none;
+    border-radius: 7px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    transition:
+        background 0.15s ease,
+        transform 0.1s ease;
+}
+
+button:hover {
+    background: var(--accent-hover);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 
@@ -180,35 +245,13 @@ button:active {
    ========================================================= */
 
 #join-button {
-    display: block;
-
     width: 100%;
-    height: 50px;
+    height: 47px;
 
-    margin-top: 18px;
+    margin-top: 14px;
 
-    background: var(--accent-color);
-
-    color: #ffffff;
-
-    border-radius: 8px;
-
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
-
-    box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.25);
-}
-
-#join-button:hover {
-    background: var(--accent-hover);
-
-    box-shadow:
-        0 6px 16px rgba(0, 0, 0, 0.3);
-}
-
-#join-button:active {
-    background: #4f46e5;
 }
 
 
@@ -217,14 +260,13 @@ button:active {
    ========================================================= */
 
 #error {
-    min-height: 20px;
+    min-height: 18px;
 
-    margin: 12px 0 0;
+    margin: 10px 0 0;
 
-    color: var(--danger-color);
+    color: var(--danger);
 
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 13px;
 }
 
 
@@ -239,7 +281,9 @@ button:active {
     display: flex;
     flex-direction: column;
 
-    background: var(--bg-color);
+    background: var(--bg);
+
+    transition: background 0.2s ease;
 }
 
 
@@ -248,55 +292,47 @@ button:active {
    ========================================================= */
 
 header {
-    min-height: 72px;
+    min-height: 68px;
 
-    padding: 14px 22px;
+    padding: 12px 20px;
 
     display: flex;
     justify-content: space-between;
     align-items: center;
 
-    background: var(--panel-color);
+    background: var(--panel);
 
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border);
 }
 
 header h2 {
-    margin: 0 0 4px;
+    margin: 0 0 3px;
 
-    color: #ffffff;
+    color: var(--text);
 
     font-size: 20px;
 }
 
 header span {
-    color: var(--muted-text);
+    color: var(--muted);
 
     font-size: 13px;
 }
 
 header strong {
-    color: #ffffff;
-
-    font-weight: 600;
+    color: var(--text);
 }
 
 
 /* =========================================================
-   LEAVE BUTTON
+   LEAVE
    ========================================================= */
 
 #leave-button {
-    padding: 10px 16px;
-
     background: #3a2025;
-
     color: #fecaca;
 
-    border-radius: 7px;
-
-    font-size: 14px;
-    font-weight: 600;
+    border: 1px solid #51282e;
 }
 
 #leave-button:hover {
@@ -328,19 +364,18 @@ main {
 .channel h3 {
     margin: 0 0 10px;
 
-    color: var(--muted-text);
+    color: var(--muted);
 
     font-size: 12px;
     font-weight: 700;
 
     text-transform: uppercase;
-
     letter-spacing: 0.8px;
 }
 
 
 /* =========================================================
-   USER LIST
+   USERS
    ========================================================= */
 
 #user-list {
@@ -351,7 +386,6 @@ main {
 }
 
 .user {
-    width: 100%;
     min-height: 48px;
 
     padding: 10px 13px;
@@ -359,15 +393,13 @@ main {
     display: flex;
     align-items: center;
 
+    color: var(--text);
+
     border-radius: 8px;
-
-    color: #ffffff;
-
-    font-size: 15px;
 }
 
 .user:hover {
-    background: var(--panel-hover);
+    background: var(--panel-2);
 }
 
 .status {
@@ -381,7 +413,7 @@ main {
     background: #22c55e;
 
     box-shadow:
-        0 0 7px rgba(34, 197, 94, 0.45);
+        0 0 7px rgba(34, 197, 94, 0.4);
 }
 
 
@@ -390,7 +422,7 @@ main {
    ========================================================= */
 
 footer {
-    min-height: 72px;
+    min-height: 70px;
 
     padding: 12px 20px;
 
@@ -400,33 +432,53 @@ footer {
 
     gap: 10px;
 
-    background: var(--panel-color);
+    background: var(--panel);
 
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid var(--border);
 }
 
 footer button {
     min-width: 115px;
 
-    padding: 11px 16px;
+    background: var(--panel-2);
 
-    background: #293548;
+    color: var(--text);
 
-    color: #ffffff;
-
-    border-radius: 8px;
-
-    font-size: 14px;
-    font-weight: 600;
+    border: 1px solid var(--border);
 }
 
 footer button:hover {
-    background: #344258;
+    background: var(--accent);
+    border-color: var(--accent);
 }
 
-#mute-button:hover,
-#deafen-button:hover {
-    background: var(--accent-color);
+
+/* =========================================================
+   THEME SWITCHER
+   ========================================================= */
+
+#theme-button {
+    position: fixed;
+
+    top: 15px;
+    right: 15px;
+
+    z-index: 1000;
+
+    padding: 8px 12px;
+
+    background: var(--panel);
+
+    color: var(--text);
+
+    border: 1px solid var(--border);
+    border-radius: 7px;
+
+    font-size: 13px;
+}
+
+#theme-button:hover {
+    background: var(--panel-2);
 }
 
 
@@ -443,22 +495,23 @@ footer button:hover {
    SCROLLBAR
    ========================================================= */
 
-main::-webkit-scrollbar {
+::-webkit-scrollbar {
     width: 8px;
+    height: 8px;
 }
 
-main::-webkit-scrollbar-track {
-    background: transparent;
+::-webkit-scrollbar-track {
+    background: var(--bg);
 }
 
-main::-webkit-scrollbar-thumb {
-    background: var(--border-color);
+::-webkit-scrollbar-thumb {
+    background: var(--border);
 
     border-radius: 10px;
 }
 
-main::-webkit-scrollbar-thumb:hover {
-    background: #475569;
+::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
 }
 
 
@@ -469,7 +522,7 @@ main::-webkit-scrollbar-thumb:hover {
 @media (max-width: 600px) {
 
     .card {
-        padding: 28px 22px;
+        padding: 27px 20px;
     }
 
     .card h1 {
@@ -478,10 +531,6 @@ main::-webkit-scrollbar-thumb:hover {
 
     header {
         padding: 12px 15px;
-    }
-
-    header h2 {
-        font-size: 18px;
     }
 
     main {
@@ -496,4 +545,10 @@ main::-webkit-scrollbar-thumb:hover {
         flex: 1;
         min-width: 0;
     }
+
+    #theme-button {
+        top: 10px;
+        right: 10px;
+    }
 }
+
