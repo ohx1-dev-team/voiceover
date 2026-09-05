@@ -4,31 +4,22 @@
    ========================================================= */
 
 :root {
-
     --bg: #0f172a;
-
     --panel: #1e293b;
-
     --panel-2: #263449;
-
     --border: #334155;
 
     --input-bg: #172033;
-
     --input-border: #475569;
 
     --text: #f8fafc;
-
     --muted: #cbd5e1;
-
     --placeholder: #94a3b8;
 
     --accent: #6366f1;
-
     --accent-hover: #818cf8;
 
     --danger: #ef4444;
-
     --success: #22c55e;
 
     --shadow: rgba(0, 0, 0, 0.35);
@@ -40,31 +31,22 @@
    ========================================================= */
 
 body.light-theme {
-
     --bg: #f1f5f9;
-
     --panel: #ffffff;
-
     --panel-2: #e2e8f0;
-
     --border: #cbd5e1;
 
     --input-bg: #f8fafc;
-
     --input-border: #94a3b8;
 
     --text: #0f172a;
-
     --muted: #475569;
-
     --placeholder: #64748b;
 
     --accent: #5865f2;
-
     --accent-hover: #4752c4;
 
     --danger: #dc2626;
-
     --success: #16a34a;
 
     --shadow: rgba(15, 23, 42, 0.15);
@@ -89,7 +71,6 @@ body {
 }
 
 body {
-
     min-height: 100vh;
 
     font-family:
@@ -101,7 +82,6 @@ body {
         sans-serif;
 
     background: var(--bg);
-
     color: var(--text);
 
     transition:
@@ -123,7 +103,6 @@ input,
 button,
 .channel-header,
 .connection-status {
-
     transition:
         background-color 0.25s ease,
         color 0.25s ease,
@@ -143,14 +122,14 @@ button,
 
 
 /* =========================================================
-   THEME SLIDER
+   THEME SLIDING SWITCH
+   BOTTOM RIGHT
    ========================================================= */
 
 .theme-switch {
-
     position: fixed;
 
-    top: 18px;
+    bottom: 20px;
     right: 20px;
 
     z-index: 9999;
@@ -164,7 +143,7 @@ button,
 }
 
 
-/* Hide actual checkbox */
+/* Hide checkbox */
 
 .theme-switch input {
     position: absolute;
@@ -176,10 +155,9 @@ button,
 }
 
 
-/* Slider */
+/* Slider background */
 
 .slider {
-
     position: absolute;
 
     inset: 0;
@@ -199,10 +177,9 @@ button,
 }
 
 
-/* Sliding circle */
+/* Sliding knob */
 
 .slider::before {
-
     content: "";
 
     position: absolute;
@@ -213,7 +190,7 @@ button,
     left: 3px;
     top: 3px;
 
-    background: white;
+    background: #ffffff;
 
     border-radius: 50%;
 
@@ -225,26 +202,27 @@ button,
 }
 
 
-/* Light mode */
+/* Light mode slider */
 
 .theme-switch input:checked + .slider {
-
     background: var(--accent);
 
     border-color: var(--accent);
 }
 
 
-.theme-switch input:checked + .slider::before {
+/* Move knob right */
 
+.theme-switch input:checked + .slider::before {
     transform: translateX(30px);
 }
 
 
-/* Icons */
+/* =========================================================
+   THEME ICONS
+   ========================================================= */
 
 .slider-icon {
-
     position: absolute;
 
     top: 7px;
@@ -255,10 +233,8 @@ button,
 
     pointer-events: none;
 
-    transition:
-        opacity 0.2s ease;
+    user-select: none;
 }
-
 
 .moon {
     left: 7px;
@@ -274,13 +250,11 @@ button,
    ========================================================= */
 
 #join-screen {
-
     min-height: 100vh;
 
     display: flex;
 
     align-items: center;
-
     justify-content: center;
 
     padding: 24px;
@@ -288,11 +262,10 @@ button,
 
 
 /* =========================================================
-   CARD
+   JOIN CARD
    ========================================================= */
 
 .card {
-
     width: 100%;
 
     max-width: 430px;
@@ -318,16 +291,14 @@ button,
 
 .logo,
 .header-logo {
-
     display: flex;
 
     align-items: center;
-
     justify-content: center;
 
     background: var(--accent);
 
-    color: white;
+    color: #ffffff;
 
     font-weight: 900;
 
@@ -335,9 +306,7 @@ button,
         0 8px 20px rgba(99, 102, 241, 0.25);
 }
 
-
 .logo {
-
     width: 58px;
     height: 58px;
 
@@ -354,7 +323,6 @@ button,
    ========================================================= */
 
 .card h1 {
-
     margin: 0 0 8px;
 
     font-size: 34px;
@@ -364,9 +332,7 @@ button,
     letter-spacing: -1px;
 }
 
-
 .subtitle {
-
     margin: 0 0 30px;
 
     color: var(--muted);
@@ -380,15 +346,12 @@ button,
    ========================================================= */
 
 .input-group {
-
     margin-bottom: 16px;
 
     text-align: left;
 }
 
-
 .input-group label {
-
     display: block;
 
     margin-bottom: 7px;
@@ -401,8 +364,11 @@ button,
 }
 
 
-input {
+/* =========================================================
+   INPUTS
+   ========================================================= */
 
+input {
     width: 100%;
 
     padding: 13px 15px;
@@ -422,14 +388,11 @@ input {
     font-size: 15px;
 }
 
-
 input::placeholder {
     color: var(--placeholder);
 }
 
-
 input:focus {
-
     border-color: var(--accent);
 
     box-shadow:
@@ -442,7 +405,6 @@ input:focus {
    ========================================================= */
 
 #join-button {
-
     width: 100%;
 
     padding: 13px 16px;
@@ -451,7 +413,7 @@ input:focus {
 
     background: var(--accent);
 
-    color: white;
+    color: #ffffff;
 
     border: none;
 
@@ -464,9 +426,7 @@ input:focus {
     cursor: pointer;
 }
 
-
 #join-button:hover {
-
     background: var(--accent-hover);
 
     transform: translateY(-1px);
@@ -474,7 +434,6 @@ input:focus {
     box-shadow:
         0 8px 20px rgba(99, 102, 241, 0.25);
 }
-
 
 #join-button:active {
     transform: translateY(0);
@@ -486,7 +445,6 @@ input:focus {
    ========================================================= */
 
 #error {
-
     min-height: 20px;
 
     margin: 14px 0 0;
@@ -502,7 +460,6 @@ input:focus {
    ========================================================= */
 
 #voice-screen {
-
     min-height: 100vh;
 
     display: flex;
@@ -516,11 +473,9 @@ input:focus {
    ========================================================= */
 
 header {
-
     display: flex;
 
     align-items: center;
-
     justify-content: space-between;
 
     padding: 18px 24px;
@@ -530,9 +485,7 @@ header {
     border-bottom: 1px solid var(--border);
 }
 
-
 .header-left {
-
     display: flex;
 
     align-items: center;
@@ -540,9 +493,7 @@ header {
     gap: 12px;
 }
 
-
 .header-logo {
-
     width: 42px;
     height: 42px;
 
@@ -551,9 +502,7 @@ header {
     font-size: 19px;
 }
 
-
 header h2 {
-
     margin: 0 0 3px;
 
     font-size: 21px;
@@ -561,14 +510,11 @@ header h2 {
     font-weight: 800;
 }
 
-
 .channel-info {
-
     color: var(--muted);
 
     font-size: 13px;
 }
-
 
 .channel-info strong {
     color: var(--text);
@@ -576,11 +522,10 @@ header h2 {
 
 
 /* =========================================================
-   LEAVE
+   LEAVE BUTTON
    ========================================================= */
 
 #leave-button {
-
     padding: 9px 15px;
 
     background: transparent;
@@ -596,12 +541,10 @@ header h2 {
     cursor: pointer;
 }
 
-
 #leave-button:hover {
-
     background: var(--danger);
 
-    color: white;
+    color: #ffffff;
 }
 
 
@@ -610,7 +553,6 @@ header h2 {
    ========================================================= */
 
 main {
-
     flex: 1;
 
     width: 100%;
@@ -628,7 +570,6 @@ main {
    ========================================================= */
 
 .channel {
-
     width: 100%;
 
     padding: 24px;
@@ -649,11 +590,9 @@ main {
    ========================================================= */
 
 .channel-header {
-
     display: flex;
 
     align-items: center;
-
     justify-content: space-between;
 
     gap: 15px;
@@ -661,17 +600,13 @@ main {
     margin-bottom: 18px;
 }
 
-
 .channel h3 {
-
     margin: 0 0 4px;
 
     font-size: 17px;
 }
 
-
 .channel-header p {
-
     margin: 0;
 
     color: var(--muted);
@@ -685,7 +620,6 @@ main {
    ========================================================= */
 
 .connection-status {
-
     display: flex;
 
     align-items: center;
@@ -707,9 +641,7 @@ main {
     white-space: nowrap;
 }
 
-
 .connection-dot {
-
     width: 8px;
     height: 8px;
 
@@ -727,7 +659,6 @@ main {
    ========================================================= */
 
 #user-list {
-
     display: flex;
 
     flex-direction: column;
@@ -741,7 +672,6 @@ main {
    ========================================================= */
 
 .user {
-
     display: flex;
 
     align-items: center;
@@ -761,9 +691,7 @@ main {
     font-size: 15px;
 }
 
-
 .user:hover {
-
     border-color: var(--accent);
 
     transform: translateX(2px);
@@ -775,7 +703,6 @@ main {
    ========================================================= */
 
 .status {
-
     width: 9px;
     height: 9px;
 
@@ -795,7 +722,6 @@ main {
    ========================================================= */
 
 footer {
-
     display: flex;
 
     justify-content: center;
@@ -815,13 +741,11 @@ footer {
    ========================================================= */
 
 .control-button {
-
     min-width: 125px;
 
     display: flex;
 
     align-items: center;
-
     justify-content: center;
 
     gap: 8px;
@@ -841,12 +765,10 @@ footer {
     cursor: pointer;
 }
 
-
 .control-button:hover {
-
     background: var(--accent);
 
-    color: white;
+    color: #ffffff;
 
     border-color: var(--accent);
 }
@@ -868,60 +790,43 @@ footer {
 @media (max-width: 600px) {
 
     .theme-switch {
-
-        top: 12px;
-        right: 12px;
-
-        transform: scale(0.9);
+        bottom: 14px;
+        right: 14px;
     }
-
 
     .card {
-
         padding: 30px 22px;
     }
-
 
     .card h1 {
         font-size: 30px;
     }
 
-
     header {
         padding: 16px;
     }
 
-
     main {
-
         padding: 18px 14px;
     }
 
-
     .channel {
-
         padding: 18px;
     }
 
-
     .channel-header {
-
         align-items: flex-start;
 
         flex-direction: column;
     }
 
-
     footer {
-
         padding: 14px;
 
         flex-direction: column;
     }
 
-
     .control-button {
-
         width: 100%;
     }
 }
@@ -936,9 +841,7 @@ footer {
     *,
     *::before,
     *::after {
-
         transition: none !important;
-
         animation: none !important;
     }
 }
