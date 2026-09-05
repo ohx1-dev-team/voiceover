@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
+
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
@@ -9,112 +11,219 @@
 
     <title>Voiceover</title>
 
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/style.css">
 
     <script src="/socket.io/socket.io.js"></script>
 </head>
 
 <body>
 
-<div id="join-screen">
+    <!-- =====================================================
+         THEME SWITCH
+         ===================================================== -->
 
-    <div class="card">
-
-        <h1>Voiceover</h1>
-
-        <p class="subtitle">
-            Simple voice chat.
-        </p>
-
+    <label
+        class="theme-switch"
+        aria-label="Toggle dark and light mode"
+    >
         <input
-            id="username"
-            type="text"
-            maxlength="32"
-            placeholder="Username"
-            autocomplete="off"
+            type="checkbox"
+            id="theme-toggle"
         >
 
-        <input
-            id="channel"
-            type="text"
-            placeholder="Channel ID"
-            autocomplete="off"
-        >
+        <span class="slider">
+            <span class="slider-icon moon">🌙</span>
+            <span class="slider-icon sun">☀️</span>
+        </span>
+    </label>
 
-        <button id="join-button">
-            Join Channel
-        </button>
 
-        <button
-    id="theme-toggle"
-    class="theme-toggle"
-    aria-label="Toggle dark and light mode">
-</button>
+    <!-- =====================================================
+         JOIN SCREEN
+         ===================================================== -->
 
-        <p id="error"></p>
+    <div id="join-screen">
+
+        <div class="card">
+
+            <div class="logo">
+                V
+            </div>
+
+            <h1>Voiceover</h1>
+
+            <p class="subtitle">
+                Simple voice chat.
+            </p>
+
+
+            <div class="input-group">
+
+                <label for="username">
+                    Username
+                </label>
+
+                <input
+                    id="username"
+                    type="text"
+                    maxlength="32"
+                    placeholder="Enter your username"
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label for="channel">
+                    Channel ID
+                </label>
+
+                <input
+                    id="channel"
+                    type="text"
+                    maxlength="64"
+                    placeholder="Enter a channel ID"
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <button id="join-button">
+                Join Channel
+            </button>
+
+
+            <p id="error"></p>
+
+        </div>
 
     </div>
 
-</div>
+
+    <!-- =====================================================
+         VOICE SCREEN
+         ===================================================== -->
+
+    <div
+        id="voice-screen"
+        class="hidden"
+    >
+
+        <!-- HEADER -->
+
+        <header>
+
+            <div class="header-left">
+
+                <div class="header-logo">
+                    V
+                </div>
+
+                <div>
+
+                    <h2>
+                        Voiceover
+                    </h2>
+
+                    <div class="channel-info">
+                        Channel:
+                        <strong id="channel-name"></strong>
+                    </div>
+
+                </div>
+
+            </div>
 
 
-<div id="voice-screen" class="hidden">
+            <button id="leave-button">
+                Leave
+            </button>
 
-    <header>
-
-        <div>
-            <h2>Voiceover</h2>
-
-            <span>
-                Channel:
-                <strong id="channel-name"></strong>
-            </span>
-        </div>
-
-        <button id="leave-button">
-            Leave
-        </button>
-
-    </header>
+        </header>
 
 
-    <main>
+        <!-- MAIN -->
 
-        <section class="channel">
+        <main>
 
-            <h3>Voice Channel</h3>
+            <section class="channel">
 
-            <div id="user-list"></div>
+                <div class="channel-header">
 
-        </section>
+                    <div>
 
-    </main>
+                        <h3>
+                            Voice Channel
+                        </h3>
 
+                        <p>
+                            People currently connected
+                        </p>
 
-    <footer>
+                    </div>
 
-        <button id="mute-button">
-            🎙️ Mute
-        </button>
+                    <div class="connection-status">
 
-        <button id="deafen-button">
-            🔊 Deafen
-        </button>
+                        <span class="connection-dot"></span>
 
-        <button
-    id="theme-toggle"
-    class="theme-toggle"
-    aria-label="Toggle dark and light mode">
-</button>
+                        Connected
 
-    </footer>
+                    </div>
 
-</div>
+                </div>
 
 
-<div id="audio-container"></div>
+                <div id="user-list">
+                    <!-- Users appear here -->
+                </div>
 
-<script src="/app.js"></script>
+            </section>
+
+        </main>
+
+
+        <!-- FOOTER -->
+
+        <footer>
+
+            <button
+                id="mute-button"
+                class="control-button"
+            >
+                🎙️
+                <span>Mute</span>
+            </button>
+
+
+            <button
+                id="deafen-button"
+                class="control-button"
+            >
+                🔊
+                <span>Deafen</span>
+            </button>
+
+        </footer>
+
+    </div>
+
+
+    <!-- =====================================================
+         REMOTE AUDIO
+         ===================================================== -->
+
+    <div id="audio-container"></div>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script src="/app.js"></script>
 
 </body>
+
 </html>

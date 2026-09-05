@@ -1,47 +1,71 @@
 /* =========================================================
-   VOICEOVER — DARK / LIGHT THEME
+   VOICEOVER
+   Dark / Light Theme
    ========================================================= */
 
 :root {
-    /* DARK MODE */
+
     --bg: #0f172a;
+
     --panel: #1e293b;
+
     --panel-2: #263449;
+
     --border: #334155;
 
     --input-bg: #172033;
+
     --input-border: #475569;
 
     --text: #f8fafc;
+
     --muted: #cbd5e1;
+
     --placeholder: #94a3b8;
 
     --accent: #6366f1;
+
     --accent-hover: #818cf8;
 
     --danger: #ef4444;
 
+    --success: #22c55e;
+
     --shadow: rgba(0, 0, 0, 0.35);
 }
 
+
+/* =========================================================
+   LIGHT MODE
+   ========================================================= */
+
 body.light-theme {
-    /* LIGHT MODE */
+
     --bg: #f1f5f9;
+
     --panel: #ffffff;
+
     --panel-2: #e2e8f0;
+
     --border: #cbd5e1;
 
     --input-bg: #f8fafc;
+
     --input-border: #94a3b8;
 
     --text: #0f172a;
+
     --muted: #475569;
+
     --placeholder: #64748b;
 
     --accent: #5865f2;
+
     --accent-hover: #4752c4;
 
     --danger: #dc2626;
+
+    --success: #16a34a;
 
     --shadow: rgba(15, 23, 42, 0.15);
 }
@@ -62,6 +86,11 @@ body {
 
     width: 100%;
     min-height: 100%;
+}
+
+body {
+
+    min-height: 100vh;
 
     font-family:
         Inter,
@@ -70,22 +99,14 @@ body {
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
-}
-
-
-/* =========================================================
-   BODY
-   ========================================================= */
-
-body {
-    min-height: 100vh;
 
     background: var(--bg);
+
     color: var(--text);
 
     transition:
-        background-color 0.2s ease,
-        color 0.2s ease;
+        background-color 0.25s ease,
+        color 0.25s ease;
 }
 
 
@@ -96,18 +117,18 @@ body {
 .card,
 header,
 footer,
-main,
 .channel,
 .user,
 input,
-textarea,
-select,
-button {
+button,
+.channel-header,
+.connection-status {
+
     transition:
-        background-color 0.2s ease,
-        color 0.2s ease,
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
+        background-color 0.25s ease,
+        color 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
         transform 0.2s ease;
 }
 
@@ -122,14 +143,144 @@ button {
 
 
 /* =========================================================
+   THEME SLIDER
+   ========================================================= */
+
+.theme-switch {
+
+    position: fixed;
+
+    top: 18px;
+    right: 20px;
+
+    z-index: 9999;
+
+    display: inline-block;
+
+    width: 64px;
+    height: 34px;
+
+    cursor: pointer;
+}
+
+
+/* Hide actual checkbox */
+
+.theme-switch input {
+    position: absolute;
+
+    opacity: 0;
+
+    width: 0;
+    height: 0;
+}
+
+
+/* Slider */
+
+.slider {
+
+    position: absolute;
+
+    inset: 0;
+
+    background: #334155;
+
+    border: 1px solid #475569;
+
+    border-radius: 999px;
+
+    box-shadow:
+        inset 0 1px 2px rgba(0, 0, 0, 0.2);
+
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease;
+}
+
+
+/* Sliding circle */
+
+.slider::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 26px;
+    height: 26px;
+
+    left: 3px;
+    top: 3px;
+
+    background: white;
+
+    border-radius: 50%;
+
+    box-shadow:
+        0 2px 5px rgba(0, 0, 0, 0.3);
+
+    transition:
+        transform 0.25s ease;
+}
+
+
+/* Light mode */
+
+.theme-switch input:checked + .slider {
+
+    background: var(--accent);
+
+    border-color: var(--accent);
+}
+
+
+.theme-switch input:checked + .slider::before {
+
+    transform: translateX(30px);
+}
+
+
+/* Icons */
+
+.slider-icon {
+
+    position: absolute;
+
+    top: 7px;
+
+    font-size: 15px;
+
+    line-height: 20px;
+
+    pointer-events: none;
+
+    transition:
+        opacity 0.2s ease;
+}
+
+
+.moon {
+    left: 7px;
+}
+
+.sun {
+    right: 7px;
+}
+
+
+/* =========================================================
    JOIN SCREEN
    ========================================================= */
 
 #join-screen {
+
     min-height: 100vh;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
     padding: 24px;
@@ -137,49 +288,86 @@ button {
 
 
 /* =========================================================
-   JOIN CARD
+   CARD
    ========================================================= */
 
 .card {
+
     width: 100%;
+
     max-width: 430px;
 
-    padding: 36px;
+    padding: 38px;
 
     background: var(--panel);
 
     border: 1px solid var(--border);
-    border-radius: 18px;
+
+    border-radius: 20px;
 
     box-shadow:
-        0 20px 50px var(--shadow);
+        0 25px 60px var(--shadow);
 
     text-align: center;
 }
 
 
 /* =========================================================
-   TITLE
+   LOGO
    ========================================================= */
 
-.card h1 {
-    margin: 0 0 8px;
+.logo,
+.header-logo {
 
-    font-size: 36px;
-    font-weight: 800;
+    display: flex;
 
-    letter-spacing: -1px;
+    align-items: center;
 
-    color: var(--text);
+    justify-content: center;
+
+    background: var(--accent);
+
+    color: white;
+
+    font-weight: 900;
+
+    box-shadow:
+        0 8px 20px rgba(99, 102, 241, 0.25);
+}
+
+
+.logo {
+
+    width: 58px;
+    height: 58px;
+
+    margin: 0 auto 18px;
+
+    border-radius: 16px;
+
+    font-size: 28px;
 }
 
 
 /* =========================================================
-   SUBTITLE
+   JOIN TITLE
    ========================================================= */
 
+.card h1 {
+
+    margin: 0 0 8px;
+
+    font-size: 34px;
+
+    font-weight: 800;
+
+    letter-spacing: -1px;
+}
+
+
 .subtitle {
-    margin: 0 0 28px;
+
+    margin: 0 0 30px;
 
     color: var(--muted);
 
@@ -188,32 +376,60 @@ button {
 
 
 /* =========================================================
-   INPUTS
+   INPUT GROUP
    ========================================================= */
 
+.input-group {
+
+    margin-bottom: 16px;
+
+    text-align: left;
+}
+
+
+.input-group label {
+
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: var(--muted);
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+
 input {
+
     width: 100%;
 
     padding: 13px 15px;
 
-    margin-bottom: 12px;
-
     background: var(--input-bg);
+
     color: var(--text);
 
     border: 1px solid var(--input-border);
+
     border-radius: 10px;
 
     outline: none;
 
+    font-family: inherit;
+
     font-size: 15px;
 }
+
 
 input::placeholder {
     color: var(--placeholder);
 }
 
+
 input:focus {
+
     border-color: var(--accent);
 
     box-shadow:
@@ -222,25 +438,11 @@ input:focus {
 
 
 /* =========================================================
-   BUTTONS
-   ========================================================= */
-
-button {
-    border: none;
-
-    cursor: pointer;
-
-    font-family: inherit;
-    font-size: 15px;
-    font-weight: 600;
-}
-
-
-/* =========================================================
    JOIN BUTTON
    ========================================================= */
 
 #join-button {
+
     width: 100%;
 
     padding: 13px 16px;
@@ -248,16 +450,31 @@ button {
     margin-top: 4px;
 
     background: var(--accent);
+
     color: white;
 
+    border: none;
+
     border-radius: 10px;
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    cursor: pointer;
 }
 
+
 #join-button:hover {
+
     background: var(--accent-hover);
 
     transform: translateY(-1px);
+
+    box-shadow:
+        0 8px 20px rgba(99, 102, 241, 0.25);
 }
+
 
 #join-button:active {
     transform: translateY(0);
@@ -265,10 +482,11 @@ button {
 
 
 /* =========================================================
-   ERROR MESSAGE
+   ERROR
    ========================================================= */
 
 #error {
+
     min-height: 20px;
 
     margin: 14px 0 0;
@@ -284,9 +502,11 @@ button {
    ========================================================= */
 
 #voice-screen {
+
     min-height: 100vh;
 
     display: flex;
+
     flex-direction: column;
 }
 
@@ -296,9 +516,11 @@ button {
    ========================================================= */
 
 header {
+
     display: flex;
 
     align-items: center;
+
     justify-content: space-between;
 
     padding: 18px 24px;
@@ -309,42 +531,76 @@ header {
 }
 
 
-header h2 {
-    margin: 0 0 4px;
+.header-left {
 
-    font-size: 22px;
-    font-weight: 800;
+    display: flex;
 
-    color: var(--text);
+    align-items: center;
+
+    gap: 12px;
 }
 
-header span {
+
+.header-logo {
+
+    width: 42px;
+    height: 42px;
+
+    border-radius: 12px;
+
+    font-size: 19px;
+}
+
+
+header h2 {
+
+    margin: 0 0 3px;
+
+    font-size: 21px;
+
+    font-weight: 800;
+}
+
+
+.channel-info {
+
     color: var(--muted);
 
     font-size: 13px;
 }
 
-header strong {
+
+.channel-info strong {
     color: var(--text);
 }
 
 
 /* =========================================================
-   LEAVE BUTTON
+   LEAVE
    ========================================================= */
 
 #leave-button {
+
     padding: 9px 15px;
 
     background: transparent;
+
     color: var(--danger);
 
     border: 1px solid var(--danger);
+
     border-radius: 9px;
+
+    font-weight: 600;
+
+    cursor: pointer;
 }
 
+
 #leave-button:hover {
+
     background: var(--danger);
+
     color: white;
 }
 
@@ -354,42 +610,115 @@ header strong {
    ========================================================= */
 
 main {
+
     flex: 1;
 
     width: 100%;
+
     max-width: 1000px;
 
     margin: 0 auto;
 
-    padding: 28px 24px;
+    padding: 30px 24px;
 }
 
 
 /* =========================================================
-   CHANNEL PANEL
+   CHANNEL
    ========================================================= */
 
 .channel {
+
     width: 100%;
 
-    padding: 22px;
+    padding: 24px;
 
     background: var(--panel);
 
     border: 1px solid var(--border);
+
     border-radius: 16px;
 
     box-shadow:
-        0 10px 30px var(--shadow);
+        0 12px 35px var(--shadow);
+}
+
+
+/* =========================================================
+   CHANNEL HEADER
+   ========================================================= */
+
+.channel-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 18px;
 }
 
 
 .channel h3 {
-    margin: 0 0 18px;
+
+    margin: 0 0 4px;
 
     font-size: 17px;
+}
 
-    color: var(--text);
+
+.channel-header p {
+
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   CONNECTION STATUS
+   ========================================================= */
+
+.connection-status {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 6px 10px;
+
+    background: var(--panel-2);
+
+    border: 1px solid var(--border);
+
+    border-radius: 999px;
+
+    color: var(--muted);
+
+    font-size: 12px;
+
+    white-space: nowrap;
+}
+
+
+.connection-dot {
+
+    width: 8px;
+    height: 8px;
+
+    background: var(--success);
+
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 8px rgba(34, 197, 94, 0.6);
 }
 
 
@@ -398,7 +727,9 @@ main {
    ========================================================= */
 
 #user-list {
+
     display: flex;
+
     flex-direction: column;
 
     gap: 8px;
@@ -410,6 +741,7 @@ main {
    ========================================================= */
 
 .user {
+
     display: flex;
 
     align-items: center;
@@ -421,6 +753,7 @@ main {
     background: var(--panel-2);
 
     border: 1px solid var(--border);
+
     border-radius: 10px;
 
     color: var(--text);
@@ -428,7 +761,9 @@ main {
     font-size: 15px;
 }
 
+
 .user:hover {
+
     border-color: var(--accent);
 
     transform: translateX(2px);
@@ -436,16 +771,17 @@ main {
 
 
 /* =========================================================
-   USER STATUS DOT
+   USER STATUS
    ========================================================= */
 
 .status {
+
     width: 9px;
     height: 9px;
 
     flex-shrink: 0;
 
-    background: #22c55e;
+    background: var(--success);
 
     border-radius: 50%;
 
@@ -459,6 +795,7 @@ main {
    ========================================================= */
 
 footer {
+
     display: flex;
 
     justify-content: center;
@@ -474,133 +811,53 @@ footer {
 
 
 /* =========================================================
-   VOICE CONTROL BUTTONS
+   CONTROL BUTTONS
    ========================================================= */
 
-#mute-button,
-#deafen-button {
-    min-width: 120px;
+.control-button {
+
+    min-width: 125px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
 
     padding: 11px 16px;
 
     background: var(--panel-2);
+
     color: var(--text);
 
     border: 1px solid var(--border);
+
     border-radius: 10px;
+
+    font-weight: 600;
+
+    cursor: pointer;
 }
 
-#mute-button:hover,
-#deafen-button:hover {
-    border-color: var(--accent);
+
+.control-button:hover {
 
     background: var(--accent);
+
     color: white;
+
+    border-color: var(--accent);
 }
 
 
 /* =========================================================
-   AUDIO CONTAINER
+   AUDIO
    ========================================================= */
 
 #audio-container {
     display: none;
-}
-
-
-/* =========================================================
-   THEME TOGGLE
-   ========================================================= */
-
-.theme-toggle {
-    position: fixed;
-
-    top: 15px;
-    right: 15px;
-
-    z-index: 9999;
-
-    width: 58px !important;
-    height: 30px !important;
-
-    min-width: 0 !important;
-
-    padding: 0 !important;
-    margin: 0 !important;
-
-    background: #334155 !important;
-
-    border: 1px solid #475569 !important;
-    border-radius: 999px !important;
-
-    cursor: pointer;
-
-    box-shadow: none !important;
-
-    transition:
-        background-color 0.2s ease,
-        border-color 0.2s ease;
-}
-
-
-/* Toggle circle */
-
-.theme-toggle::after {
-    content: "";
-
-    position: absolute;
-
-    top: 3px;
-    left: 3px;
-
-    width: 22px;
-    height: 22px;
-
-    background: #ffffff;
-
-    border-radius: 50%;
-
-    transition:
-        transform 0.2s ease;
-}
-
-
-/* Moon */
-
-.theme-toggle::before {
-    content: "🌙";
-
-    position: absolute;
-
-    left: 7px;
-    top: 4px;
-
-    font-size: 14px;
-
-    line-height: 20px;
-
-    z-index: 2;
-
-    pointer-events: none;
-}
-
-
-/* Light mode toggle */
-
-body.light-theme .theme-toggle {
-    background: #6366f1 !important;
-
-    border-color: #6366f1 !important;
-}
-
-body.light-theme .theme-toggle::after {
-    transform: translateX(28px);
-}
-
-body.light-theme .theme-toggle::before {
-    content: "☀️";
-
-    left: 35px;
 }
 
 
@@ -610,36 +867,62 @@ body.light-theme .theme-toggle::before {
 
 @media (max-width: 600px) {
 
-    .card {
-        padding: 28px 22px;
+    .theme-switch {
+
+        top: 12px;
+        right: 12px;
+
+        transform: scale(0.9);
     }
+
+
+    .card {
+
+        padding: 30px 22px;
+    }
+
 
     .card h1 {
         font-size: 30px;
     }
 
+
     header {
         padding: 16px;
     }
 
+
     main {
+
         padding: 18px 14px;
     }
 
+
+    .channel {
+
+        padding: 18px;
+    }
+
+
+    .channel-header {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
     footer {
+
         padding: 14px;
 
         flex-direction: column;
     }
 
-    #mute-button,
-    #deafen-button {
-        width: 100%;
-    }
 
-    .theme-toggle {
-        top: 10px;
-        right: 10px;
+    .control-button {
+
+        width: 100%;
     }
 }
 
@@ -653,7 +936,9 @@ body.light-theme .theme-toggle::before {
     *,
     *::before,
     *::after {
+
         transition: none !important;
+
         animation: none !important;
     }
 }

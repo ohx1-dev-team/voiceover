@@ -42,7 +42,6 @@ io.on("connection", (socket) => {
 
         const channel = channels.get(channelId);
 
-        // Tell the new user about everyone already there.
         const existingUsers = [];
 
         for (const [id, user] of channel) {
@@ -54,22 +53,21 @@ io.on("connection", (socket) => {
 
         socket.emit("channel-users", existingUsers);
 
-        // Add the new user.
         channel.set(socket.id, {
             username
         });
 
-        // Tell everyone else about the new user.
         socket.to(channelId).emit("user-joined", {
             id: socket.id,
             username
         });
 
-        console.log(`${username} joined ${channelId}`);
+        console.log(`${username} joined channel ${channelId}`);
     });
 
-    // WebRTC signaling.
     socket.on("offer", ({ target, offer }) => {
+        if (!target || !offer) return;
+
         io.to(target).emit("offer", {
             sender: socket.id,
             offer
@@ -77,6 +75,8 @@ io.on("connection", (socket) => {
     });
 
     socket.on("answer", ({ target, answer }) => {
+        if (!target || !answer) return;
+
         io.to(target).emit("answer", {
             sender: socket.id,
             answer
@@ -84,6 +84,8 @@ io.on("connection", (socket) => {
     });
 
     socket.on("ice-candidate", ({ target, candidate }) => {
+        if (!target || !candidate) return;
+
         io.to(target).emit("ice-candidate", {
             sender: socket.id,
             candidate
@@ -109,7 +111,9 @@ io.on("connection", (socket) => {
             channels.delete(channelId);
         }
 
-        console.log(`${socket.username} left ${channelId}`);
+        console.log(
+            `${socket.username || socket.id} left channel ${channelId}`
+        );
     });
 });
 
