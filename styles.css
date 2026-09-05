@@ -1,0 +1,416 @@
+
+css
+
+:root {
+  --bg-color: #0f172a;
+  --panel-color: #1e293b;
+  --panel-hover: #263449;
+  --accent-color: #6366f1;
+  --accent-hover: #4f46e5;
+  --self-color: #1de064;
+  --text-color: #f1f5f9;
+  --muted-text: #94a3b8;
+  --border-color: #334155;
+  --danger-color: #ef4444;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+
+/* ========================================
+   GENERAL
+======================================== */
+
+button,
+input {
+  font-family: inherit;
+}
+
+button {
+  border: none;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    transform 0.1s ease,
+    opacity 0.15s ease;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+.hidden {
+  display: none !important;
+}
+
+
+/* ========================================
+   JOIN SCREEN
+======================================== */
+
+#join-screen {
+  width: 100%;
+  height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background:
+    radial-gradient(
+      circle at top,
+      #1e293b 0%,
+      var(--bg-color) 55%
+    );
+}
+
+.card {
+  width: min(420px, calc(100% - 32px));
+  padding: 36px;
+
+  background: var(--panel-color);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.35);
+
+  text-align: center;
+}
+
+.card h1 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.subtitle {
+  margin: 8px 0 28px;
+  color: var(--muted-text);
+  font-size: 15px;
+}
+
+.card input {
+  width: 100%;
+  height: 46px;
+
+  margin: 6px 0;
+
+  padding: 0 14px;
+
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+
+  background: #172033;
+  color: var(--text-color);
+
+  outline: none;
+  font-size: 15px;
+
+  transition: border-color 0.15s ease;
+}
+
+.card input::placeholder {
+  color: #64748b;
+}
+
+.card input:focus {
+  border-color: var(--accent-color);
+}
+
+#join-button {
+  width: 100%;
+  height: 46px;
+
+  margin-top: 14px;
+
+  border-radius: 8px;
+
+  background: var(--accent-color);
+  color: white;
+
+  font-size: 15px;
+  font-weight: 600;
+}
+
+#join-button:hover {
+  background: var(--accent-hover);
+}
+
+#error {
+  min-height: 18px;
+  margin: 12px 0 0;
+
+  color: var(--danger-color);
+  font-size: 14px;
+}
+
+
+/* ========================================
+   VOICE SCREEN
+======================================== */
+
+#voice-screen {
+  width: 100%;
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  background: var(--bg-color);
+}
+
+
+/* ========================================
+   HEADER
+======================================== */
+
+header {
+  min-height: 72px;
+
+  padding: 14px 22px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  background: var(--panel-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+header h2 {
+  margin: 0 0 4px;
+
+  font-size: 20px;
+}
+
+header span {
+  color: var(--muted-text);
+  font-size: 13px;
+}
+
+header strong {
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+#leave-button {
+  padding: 9px 15px;
+
+  border-radius: 7px;
+
+  background: #3a2025;
+  color: #fca5a5;
+
+  font-size: 14px;
+}
+
+#leave-button:hover {
+  background: #57262d;
+}
+
+
+/* ========================================
+   MAIN / CHANNEL
+======================================== */
+
+main {
+  flex: 1;
+
+  width: 100%;
+
+  padding: 24px;
+
+  overflow-y: auto;
+}
+
+.channel {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.channel h3 {
+  margin: 0 0 10px;
+
+  color: var(--muted-text);
+
+  font-size: 12px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+
+/* ========================================
+   USER LIST
+======================================== */
+
+#user-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.user {
+  width: 100%;
+
+  min-height: 48px;
+
+  padding: 10px 13px;
+
+  display: flex;
+  align-items: center;
+
+  border-radius: 8px;
+
+  color: var(--text-color);
+
+  font-size: 15px;
+
+  transition:
+    background-color 0.15s ease;
+}
+
+.user:hover {
+  background: var(--panel-hover);
+}
+
+.status {
+  width: 10px;
+  height: 10px;
+
+  margin-right: 12px;
+
+  border-radius: 50%;
+
+  background: #22c55e;
+
+  box-shadow:
+    0 0 7px rgba(34, 197, 94, 0.45);
+}
+
+
+/* ========================================
+   CONTROLS
+======================================== */
+
+footer {
+  min-height: 72px;
+
+  padding: 12px 20px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  background: var(--panel-color);
+  border-top: 1px solid var(--border-color);
+}
+
+footer button {
+  min-width: 115px;
+
+  padding: 10px 16px;
+
+  border-radius: 8px;
+
+  background: #293548;
+  color: var(--text-color);
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+footer button:hover {
+  background: #344258;
+}
+
+#mute-button:hover,
+#deafen-button:hover {
+  background: var(--accent-color);
+}
+
+
+/* ========================================
+   AUDIO
+======================================== */
+
+#audio-container {
+  display: none;
+}
+
+
+/* ========================================
+   SCROLLBAR
+======================================== */
+
+main::-webkit-scrollbar {
+  width: 8px;
+}
+
+main::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+main::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 10px;
+}
+
+main::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 600px) {
+
+  .card {
+    padding: 28px 22px;
+  }
+
+  .card h1 {
+    font-size: 28px;
+  }
+
+  header {
+    padding: 12px 15px;
+  }
+
+  header h2 {
+    font-size: 18px;
+  }
+
+  main {
+    padding: 15px;
+  }
+
+  footer {
+    padding: 10px;
+  }
+
+  footer button {
+    flex: 1;
+    min-width: 0;
+  }
+}
+

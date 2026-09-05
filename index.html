@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Voiceover</title>
+
+    <link rel="stylesheet" href="/style.css">
+
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+
+<div id="join-screen">
+
+    <div class="card">
+
+        <h1>Voiceover</h1>
+
+        <p class="subtitle">
+            Simple voice chat.
+        </p>
+
+        <input
+            id="username"
+            type="text"
+            maxlength="32"
+            placeholder="Username"
+            autocomplete="off"
+        >
+
+        <input
+            id="channel"
+            type="text"
+            placeholder="Channel ID"
+            autocomplete="off"
+        >
+
+        <button id="join-button">
+            Join Channel
+        </button>
+
+        <p id="error"></p>
+
+    </div>
+
+</div>
+
+
+<div id="voice-screen" class="hidden">
+
+    <header>
+
+        <div>
+            <h2>Voiceover</h2>
+
+            <span>
+                Channel:
+                <strong id="channel-name"></strong>
+            </span>
+        </div>
+
+        <button id="leave-button">
+            Leave
+        </button>
+
+    </header>
+
+
+    <main>
+
+        <section class="channel">
+
+            <h3>Voice Channel</h3>
+
+            <div id="user-list"></div>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+
+        <button id="mute-button">
+            🎙️ Mute
+        </button>
+
+        <button id="deafen-button">
+            🔊 Deafen
+        </button>
+
+    </footer>
+
+</div>
+
+
+<div id="audio-container"></div>
+
+<script src="/app.js"></script>
+
+</body>
+</html>
